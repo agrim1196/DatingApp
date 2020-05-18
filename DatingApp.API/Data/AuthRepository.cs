@@ -22,7 +22,7 @@ namespace DatingApp.API.Data
         public async Task<User> Login(string username, string password)
         {
             //Firstordefaultasync will return null incase value not matched unlike firstordefault that will throw an exception in such a case
-             var user=await _context.Users.FirstOrDefaultAsync(x=> x.Username == username);
+             var user=await _context.Users.Include(p => p.Photos).FirstOrDefaultAsync(x=> x.Username == username);
              if(user == null)
              {
                  return null;

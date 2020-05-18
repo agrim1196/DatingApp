@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using DatingApp.API.Data;
+using DatingApp.API.Helpers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -35,6 +36,7 @@ namespace DatingApp.API
               services.AddDbContext<DataContext> (x => x.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
               services.AddControllers().AddNewtonsoftJson();
               services.AddCors();
+              services.Configure<CloudinarySettings>(Configuration.GetSection("Cloudinary"));
               services.AddAutoMapper(typeof(DatingRepository).Assembly);
               services.AddScoped<IAuthRepository,AuthRepository>();
               services.AddScoped<IDatingRepository, DatingRepository>();
@@ -66,7 +68,8 @@ namespace DatingApp.API
 
             app.UseRouting();
 
-            app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+            app.UseCors(x => x.WithOrigins("http://localhost:4200")
+                .AllowAnyMethod().AllowAnyHeader().AllowCredentials());
             app.UseAuthentication();
             app.UseAuthorization();
 
